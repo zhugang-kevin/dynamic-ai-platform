@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
+import EnvCheck from './components/EnvCheck';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   // ✅ Log environment variables once when the component renders
-  console.log('SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL)
-  console.log('SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY)
-  console.log('PAYPAL_CLIENT_ID:', import.meta.env.VITE_PAYPAL_CLIENT_ID)
-  console.log('STRIPE_PUBLIC_KEY:', import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+  console.log('SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
+  console.log('SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
+  console.log('PAYPAL_CLIENT_ID:', import.meta.env.VITE_PAYPAL_CLIENT_ID);
+  console.log('STRIPE_PUBLIC_KEY:', import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
   return (
     <>
@@ -22,7 +23,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Dynamic AI Platform</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           I am once {count}
@@ -35,18 +36,10 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
 
-      {/* ✅ Add a section to visually confirm env variables */}
-      <div className="env-check">
-        <h2>Environment Variable Check</h2>
-        <ul>
-          <li>SUPABASE_URL: {import.meta.env.VITE_SUPABASE_URL}</li>
-          <li>SUPABASE_ANON_KEY: {import.meta.env.VITE_SUPABASE_ANON_KEY}</li>
-          <li>PAYPAL_CLIENT_ID: {import.meta.env.VITE_PAYPAL_CLIENT_ID}</li>
-          <li>STRIPE_PUBLIC_KEY: {import.meta.env.VITE_STRIPE_PUBLIC_KEY}</li>
-        </ul>
-      </div>
+      {/* ✅ Use the EnvCheck component */}
+      <EnvCheck />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
