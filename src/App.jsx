@@ -1,45 +1,79 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
-import EnvCheck from './components/EnvCheck';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0);
+// Initialize Client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
-  // ✅ Log environment variables once when the component renders
-  console.log('SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
-  console.log('SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
-  console.log('PAYPAL_CLIENT_ID:', import.meta.env.VITE_PAYPAL_CLIENT_ID);
-  console.log('STRIPE_PUBLIC_KEY:', import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+export default function App() {
+  const [phase1Status, setPhase1Status] = useState("Infrastructure: Checking...");
+  const [phase2Status, setPhase2Status] = useState("Database: Checking...");
+
+  useEffect(() => {
+    async function runDiagnostics() {
+      // TEST 1: Infrastructure (Can we reach Supabase?)
+      const { data: authData, error: authError } = await supabase.auth.getSession();
+      if (authError) {
+        setPhase1Status("❌ Phase 1 Failed: Infrastructure unreachable");
+      } else {
+        setPhase1Status("✅ Phase 1 Complete: Infrastructure Operational");
+      }
+
+      // TEST 2: Database (Can we read the 'profiles' table created in Phase 2?)
+      // We expect an empty list [], NOT an error 404.
+      const { data, error } = await supabase.from("profiles").select("*").limit(1);
+      
+      if (error) {
+        console.error("DB Error:", error);
+        setPhase2Status(`❌ Phase 2 Failed: Table 'profiles' not found or blocked.`);
+      } else {
+        console.log("Profiles Data:", data);
+        setPhase2Status("✅ Phase 2 Complete: 'profiles' table is active.");
+      }
+    }
+    runDiagnostics();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Dynamic AI Platform</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          I am once {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <PayPalScriptProvider options={{ "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID }}>
+      <div style={{ padding: "40px", fontFamily: "sans-serif", maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
+        
+        <h1>🚀 Project Status Certification</h1>
+        
+        <div style={{ display: "grid", gap: "20px", marginTop: "40px" }}>
+          {/* Phase 1 Card */}
+          <div style={{ 
+            padding: "20px", 
+            border: "2px solid", 
+            borderColor: phase1Status.includes("✅") ? "green" : "red",
+            borderRadius: "10px",
+            backgroundColor: phase1Status.includes("✅") ? "#e8f5e9" : "#ffebee"
+          }}>
+            <h3>Phase 1: Foundation</h3>
+            <p style={{fontSize: "18px", fontWeight: "bold"}}>{phase1Status}</p>
+          </div>
 
-      {/* ✅ Use the EnvCheck component */}
-      <EnvCheck />
-    </>
+          {/* Phase 2 Card */}
+          <div style={{ 
+            padding: "20px", 
+            border: "2px solid", 
+            borderColor: phase2Status.includes("✅") ? "green" : "red",
+            borderRadius: "10px",
+            backgroundColor: phase2Status.includes("✅") ? "#e8f5e9" : "#ffebee"
+          }}>
+            <h3>Phase 2: Database</h3>
+            <p style={{fontSize: "18px", fontWeight: "bold"}}>{phase2Status}</p>
+          </div>
+        </div>
+
+        <p style={{marginTop: "40px", color: "#666"}}>
+          If both boxes are green, you are ready to start Phase 3 (Login/Auth).
+        </p>
+
+      </div>
+    </PayPalScriptProvider>
   );
 }
-
-export default App;

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "netlify dev --port 3000 --functions=netlify/functions --offline",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
