@@ -1,12 +1,15 @@
 [functions]
-directory = "netlify/functions"
+  directory = "netlify/functions"
 
-[build]
-command = "npm run build"
-publish = "dist"
+[dev]
+  framework = "#static"
+  targetPort = 5173
+  port = 8888
+  publish = "dist"
+  autoLaunch = false
 
-# --- THE FIX FOR 404 ERRORS ---
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
