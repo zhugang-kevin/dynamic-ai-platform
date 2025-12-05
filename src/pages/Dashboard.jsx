@@ -87,7 +87,12 @@ export default function Dashboard({ session }) {
         <div style={{ padding: "20px", border: "1px solid #eee", borderRadius: "10px", transition: "0.2s", cursor: "pointer" }}>
           <h4 style={{ margin: "0 0 10px 0" }}>✨ Create Content</h4>
           <p style={{ fontSize: "14px", color: "#666" }}>Generate posts, emails, or blogs using AI.</p>
-          <button style={{ marginTop: "10px", width: "100%", padding: "10px", background: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>Start Creating</button>
+          <button 
+            onClick={() => navigate("/create")}
+            style={{ marginTop: "10px", width: "100%", padding: "10px", background: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
+          >
+            Start Creating
+          </button>
         </div>
 
       </div>
